@@ -40,9 +40,8 @@ public class FighterController : MonoBehaviour
     void SpawnBullet()
     {
         GameObject bullet = Instantiate(bulletPrefab);
-        bullet.transform.parent = transform;
-        transform.TransformPoint(transform.position);
-        transform.rotation = Quaternion.identity;
+        bullet.transform.position = transform.position;
+        bullet.transform.rotation = transform.rotation;
     }
 }
 
@@ -119,7 +118,7 @@ public class RefuelState : State
 {
     public override void Enter()
     {
-        owner.GetComponent<Refuel>().BaseGameObject = owner.GetComponent<FighterController>().homeBase;
+        owner.GetComponent<Refuel>().baseGameObject = owner.GetComponent<FighterController>().homeBase;
         owner.GetComponent<Refuel>().enabled = true;
     }
 

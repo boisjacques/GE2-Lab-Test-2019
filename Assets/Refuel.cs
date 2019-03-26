@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Refuel : SteeringBehaviour
 {
-    public GameObject BaseGameObject;
+    public GameObject baseGameObject;
 
-    public Vector3 BasePosition; 
+    public Vector3 basePosition; 
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +21,6 @@ public class Refuel : SteeringBehaviour
 
     public override Vector3 Calculate()
     {
-        return boid.ArriveForce(BasePosition, 3);
+        return boid.ArriveForce(basePosition, 7);
     }
 }

@@ -47,11 +47,11 @@ public class Base : MonoBehaviour
     void SpawnFighter()
     {
         GameObject fighter = Instantiate(fighterPrefab);
-        fighter.transform.parent = transform;
-        fighter.transform.TransformPoint(transform.position);
+        //fighter.transform.TransformPoint(transform.position);
+        fighter.transform.position = transform.position;
         fighter.GetComponent<FighterController>().homeBase = gameObject;
-        fighter.GetComponent<Refuel>().BaseGameObject = gameObject;
-        fighter.GetComponent<Refuel>().BasePosition = transform.position;
+        fighter.GetComponent<Refuel>().baseGameObject = gameObject;
+        fighter.GetComponent<Refuel>().basePosition = transform.position;
     }
 
     void SetColor()
