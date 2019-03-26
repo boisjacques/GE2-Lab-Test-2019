@@ -17,8 +17,10 @@ public class Base : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        color = Color.HSVToRGB(Random.Range(0.0f, 1.0f), 1, 1);
         SetColor();
         StartCoroutine(IncreaseTiberium());
+        tag = "base";
     }
 
     // Update is called once per frame
@@ -48,13 +50,14 @@ public class Base : MonoBehaviour
         fighter.transform.parent = transform;
         fighter.transform.TransformPoint(transform.position);
         fighter.GetComponent<FighterController>().homeBase = gameObject;
+        fighter.GetComponent<Refuel>().BaseGameObject = gameObject;
+        fighter.GetComponent<Refuel>().BasePosition = transform.position;
     }
 
     void SetColor()
     {
         foreach (Renderer r in GetComponentsInChildren<Renderer>())
         {
-            color = Color.HSVToRGB(Random.Range(0.0f, 1.0f), 1, 1);
             r.material.color = color;
         }
     }

@@ -8,33 +8,41 @@ public class FighterController : MonoBehaviour
     public GameObject bulletPrefab;
     public GameObject homeBase;
     public float tiberium;
-    
+    public bool inAttack;
+
     // Start is called before the first frame update
     void Start()
     {
         tiberium = 7;
         StartCoroutine(Fire());
+        GetComponent<StateMachine>().ChangeState(new SearchTarget());
     }
 
     // Update is called once per frame
     void Update()
     {
-        
     }
 
-    IEnumerator Fire()
+    private IEnumerator Fire()
     {
-        if (Vector3.Distance(target.transform.position, transform.position) <= 1)
+        while (true)
         {
-            Instantiate(bulletPrefab);
-            tiberium -= 1;
+            if (inAttack && tiberium > 0)
+            {
+                SpawnBullet();
+                tiberium -= 1;
+            }
+
+            yield return new WaitForSeconds(0.05f);
         }
-        yield return new WaitForSeconds(0.01f);
     }
 
-    public float GetTiberium()
+    void SpawnBullet()
     {
-        return tiberium;
+        GameObject bullet = Instantiate(bulletPrefab);
+        bullet.transform.parent = transform;
+        transform.TransformPoint(transform.position);
+        transform.rotation = Quaternion.identity;
     }
 }
 
@@ -42,13 +50,39 @@ public class SearchTarget : State
 {
     public override void Enter()
     {
-        owner.GetComponent<Attack>().target = owner.GetComponent<FighterController>().target.GetComponent<GameObject>();
-        owner.GetComponent<Attack>().enabled = true;
+        owner.GetComponent<JitterWander>().enabled = true;
     }
 
     public override void Think()
     {
-        if (owner.GetComponent<FighterController>().tiberium <= 0)
+        GameObject[] possibleTargets = GameObject.FindGameObjectsWithTag("base");
+        GameObject maybeTarget = possibleTargets[Random.Range(0, possibleTargets.Length)];
+        if (maybeTarget != owner.GetComponent<FighterController>().homeBase)
+        {
+            owner.GetComponent<FighterController>().target = maybeTarget;
+            owner.GetComponent<Approach>().targetPosition = maybeTarget.transform.position;
+            owner.ChangeState(new ApproachState());
+        }
+    }
+
+    public override void Exit()
+    {
+        owner.GetComponent<JitterWander>().enabled = false;
+    }
+}
+
+public class ApproachState : State
+{
+    public override void Enter()
+    {
+        owner.GetComponent<Approach>().enabled = true;
+    }
+
+    public override void Think()
+    {
+        if (Vector3.Distance(
+                owner.GetComponent<FighterController>().target.transform.position,
+                owner.transform.position) < 3)
         {
             owner.ChangeState(new AttackState());
         }
@@ -56,7 +90,6 @@ public class SearchTarget : State
 
     public override void Exit()
     {
-        owner.GetComponent<Attack>().enabled = false;
     }
 }
 
@@ -64,8 +97,7 @@ public class AttackState : State
 {
     public override void Enter()
     {
-        owner.GetComponent<Attack>().target = owner.GetComponent<FighterController>().target.GetComponent<GameObject>();
-        owner.GetComponent<Attack>().enabled = true;
+        owner.GetComponent<FighterController>().inAttack = true;
     }
 
     public override void Think()
@@ -78,7 +110,8 @@ public class AttackState : State
 
     public override void Exit()
     {
-        owner.GetComponent<Attack>().enabled = false;
+        owner.GetComponent<Approach>().enabled = false;
+        owner.GetComponent<FighterController>().inAttack = false;
     }
 }
 
@@ -86,7 +119,7 @@ public class RefuelState : State
 {
     public override void Enter()
     {
-        owner.GetComponent<Refuel>().BaseGameObject = owner.GetComponent<FighterController>().target;
+        owner.GetComponent<Refuel>().BaseGameObject = owner.GetComponent<FighterController>().homeBase;
         owner.GetComponent<Refuel>().enabled = true;
     }
 
@@ -97,6 +130,7 @@ public class RefuelState : State
             owner.ChangeState(new SearchTarget());
         }
     }
+
     public override void Exit()
     {
         owner.GetComponent<Refuel>().enabled = false;
