@@ -33,7 +33,7 @@ public class FighterController : MonoBehaviour
                 tiberium -= 1;
             }
 
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(0.1f);
         }
     }
 
@@ -81,7 +81,7 @@ public class ApproachState : State
     {
         if (Vector3.Distance(
                 owner.GetComponent<FighterController>().target.transform.position,
-                owner.transform.position) < 3)
+                owner.transform.position) < 20)
         {
             owner.ChangeState(new AttackState());
         }

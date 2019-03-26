@@ -30,7 +30,6 @@ public class Base : MonoBehaviour
         if (tiberium >= 10)
         {
             SpawnFighter();
-            SetColor();
             tiberium -= 10;
         }
     }
@@ -44,14 +43,29 @@ public class Base : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("bullet"))
+        {
+            tiberium -= 0.5f;
+        }
+
+        if (other.CompareTag("fighter") && tiberium >= 7)
+        {
+            other.GetComponent<FighterController>().tiberium = 7;
+            tiberium -= 7;
+        }
+    }
+
     void SpawnFighter()
     {
         GameObject fighter = Instantiate(fighterPrefab);
-        //fighter.transform.TransformPoint(transform.position);
         fighter.transform.position = transform.position;
         fighter.GetComponent<FighterController>().homeBase = gameObject;
         fighter.GetComponent<Refuel>().baseGameObject = gameObject;
         fighter.GetComponent<Refuel>().basePosition = transform.position;
+        Renderer renderer= fighter.GetComponent<Renderer>();
+        renderer.material.color = color;
     }
 
     void SetColor()
