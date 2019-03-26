@@ -12,9 +12,7 @@ public class FighterController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        gameObject.AddComponent<Boid>();
-        gameObject.AddComponent<StateMachine>();
-
+        tiberium = 7;
         StartCoroutine(Fire());
     }
 
@@ -40,11 +38,33 @@ public class FighterController : MonoBehaviour
     }
 }
 
+public class SearchTarget : State
+{
+    public override void Enter()
+    {
+        owner.GetComponent<Attack>().target = owner.GetComponent<FighterController>().target.GetComponent<GameObject>();
+        owner.GetComponent<Attack>().enabled = true;
+    }
+
+    public override void Think()
+    {
+        if (owner.GetComponent<FighterController>().tiberium <= 0)
+        {
+            owner.ChangeState(new AttackState());
+        }
+    }
+
+    public override void Exit()
+    {
+        owner.GetComponent<Attack>().enabled = false;
+    }
+}
+
 public class AttackState : State
 {
     public override void Enter()
     {
-        owner.GetComponent<Attack>().target = owner.GetComponent<FighterController>().target.GetComponent<Boid>();
+        owner.GetComponent<Attack>().target = owner.GetComponent<FighterController>().target.GetComponent<GameObject>();
         owner.GetComponent<Attack>().enabled = true;
     }
 
@@ -66,17 +86,15 @@ public class RefuelState : State
 {
     public override void Enter()
     {
-        owner.GetComponent<Refuel>().targetGameObject = owner.GetComponent<FighterController>().target;
+        owner.GetComponent<Refuel>().BaseGameObject = owner.GetComponent<FighterController>().target;
         owner.GetComponent<Refuel>().enabled = true;
     }
 
     public override void Think()
     {
-        if (Vector3.Distance(
-                owner.GetComponent<FighterController>().target.transform.position,
-                owner.transform.position) > 30)
+        if (owner.GetComponent<FighterController>().tiberium >= 7)
         {
-            owner.ChangeState(new AttackState());
+            owner.ChangeState(new SearchTarget());
         }
     }
     public override void Exit()

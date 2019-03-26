@@ -11,15 +11,13 @@ public class Base : MonoBehaviour
 
     public GameObject fighterPrefab;
 
+    public Color color;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        foreach (Renderer r in GetComponentsInChildren<Renderer>())
-        {
-            r.material.color = Color.HSVToRGB(Random.Range(0.0f, 1.0f), 1, 1);
-        }
-
+        SetColor();
         StartCoroutine(IncreaseTiberium());
     }
 
@@ -30,18 +28,34 @@ public class Base : MonoBehaviour
         if (tiberium >= 10)
         {
             SpawnFighter();
+            SetColor();
+            tiberium -= 10;
         }
     }
 
     IEnumerator IncreaseTiberium()
     {
-        tiberium += 1;
-        yield return new WaitForSeconds(1);
+        while (true)
+        {
+            tiberium += 1;
+            yield return new WaitForSeconds(1);
+        }
     }
 
     void SpawnFighter()
     {
         GameObject fighter = Instantiate(fighterPrefab);
-        fighter.AddComponent<FighterController>();
+        fighter.transform.parent = transform;
+        fighter.transform.TransformPoint(transform.position);
+        fighter.GetComponent<FighterController>().homeBase = gameObject;
+    }
+
+    void SetColor()
+    {
+        foreach (Renderer r in GetComponentsInChildren<Renderer>())
+        {
+            color = Color.HSVToRGB(Random.Range(0.0f, 1.0f), 1, 1);
+            r.material.color = color;
+        }
     }
 }

@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Attack : SteeringBehaviour
 {
-    private Vector3 targetPosition = Vector3.zero;
+    public Vector3 targetPosition = Vector3.zero;
+    public GameObject target;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -19,6 +21,6 @@ public class Attack : SteeringBehaviour
 
     public override Vector3 Calculate()
     {
-        throw new System.NotImplementedException();
+        return boid.SeekForce(targetPosition);
     }
 }
