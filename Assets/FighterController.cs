@@ -9,6 +9,7 @@ public class FighterController : MonoBehaviour
     public GameObject homeBase;
     public float tiberium;
     public bool inAttack;
+    public bool needsRefueling;
 
     // Start is called before the first frame update
     void Start()
@@ -103,6 +104,7 @@ public class AttackState : State
     {
         if (owner.GetComponent<FighterController>().tiberium <= 0)
         {
+            owner.GetComponent<FighterController>().needsRefueling = true;
             owner.ChangeState(new RefuelState());
         }
     }
@@ -126,6 +128,7 @@ public class RefuelState : State
     {
         if (owner.GetComponent<FighterController>().tiberium >= 7)
         {
+            owner.GetComponent<FighterController>().needsRefueling = true;
             owner.ChangeState(new SearchTarget());
         }
     }

@@ -49,8 +49,13 @@ public class Base : MonoBehaviour
         {
             tiberium -= 0.5f;
         }
+    }
 
-        if (other.CompareTag("fighter") && tiberium >= 7)
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("fighter")
+            && tiberium >= 7
+            && other.GetComponent<FighterController>().needsRefueling)
         {
             other.GetComponent<FighterController>().tiberium = 7;
             tiberium -= 7;
@@ -64,7 +69,7 @@ public class Base : MonoBehaviour
         fighter.GetComponent<FighterController>().homeBase = gameObject;
         fighter.GetComponent<Refuel>().baseGameObject = gameObject;
         fighter.GetComponent<Refuel>().basePosition = transform.position;
-        Renderer renderer= fighter.GetComponent<Renderer>();
+        Renderer renderer = fighter.GetComponent<Renderer>();
         renderer.material.color = color;
     }
 

@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 8137522575135657887}
   m_Layer: 9
   m_Name: fighter
-  m_TagString: Untagged
+  m_TagString: fighter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -208,8 +208,8 @@ MonoBehaviour:
   weight: 1
   force: {x: 0, y: 0, z: 0}
   boid: {fileID: 0}
-  BaseGameObject: {fileID: 0}
-  BasePosition: {x: 0, y: 0, z: 0}
+  baseGameObject: {fileID: 0}
+  basePosition: {x: 0, y: 0, z: 0}
 --- !u!114 &5021285042827455856
 MonoBehaviour:
   m_ObjectHideFlags: 0
