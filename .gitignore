@@ -43,3 +43,7 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+
+\.idea/\.idea\.GE2-Lab-Test-2019/\.idea/
+
+\.idea/\.idea\.GE2-Lab-Test-2019/

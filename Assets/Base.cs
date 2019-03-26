@@ -19,11 +19,29 @@ public class Base : MonoBehaviour
         {
             r.material.color = Color.HSVToRGB(Random.Range(0.0f, 1.0f), 1, 1);
         }
+
+        StartCoroutine(IncreaseTiberium());
     }
 
     // Update is called once per frame
     void Update()
     {
         text.text = "" + tiberium;
+        if (tiberium >= 10)
+        {
+            SpawnFighter();
+        }
+    }
+
+    IEnumerator IncreaseTiberium()
+    {
+        tiberium += 1;
+        yield return new WaitForSeconds(1);
+    }
+
+    void SpawnFighter()
+    {
+        GameObject fighter = Instantiate(fighterPrefab);
+        fighter.AddComponent<FighterController>();
     }
 }
